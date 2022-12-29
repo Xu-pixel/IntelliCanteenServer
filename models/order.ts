@@ -4,14 +4,12 @@ const orderSchema = new Schema({
     customer: {
         type: SchemaTypes.ObjectId,
         ref: "User",
-        require: true,
-        validate: (v: { role: string; }) => v.role === 'customer'
+        default: null,
     },
     waiter: {
         type: SchemaTypes.ObjectId,
         ref: "User",
-        require: true,
-        validate: (v: { role: string; }) => v.role === 'waiter'
+        default: null,
     },
     createdAt: {
         type: Date,

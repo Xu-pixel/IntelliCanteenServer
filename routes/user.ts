@@ -2,6 +2,7 @@ import { Router, Status } from "https://deno.land/x/oak@v11.1.0/mod.ts";
 import User from '../models/user.ts'
 import { create } from "https://deno.land/x/djwt@v2.8/mod.ts";
 import { key } from '../utils/jwt.ts'
+import { jwtGuard, waiterGuard } from "../utils/Guards.ts";
 
 const router = new Router()
 export default router
@@ -49,7 +50,7 @@ router.post('/login', async ({ request, response }) => {
 })
 
 
-router.get('/', async ({ response }) => {
+router.get('/', jwtGuard, waiterGuard, async ({ response }) => {
     response.body = await User.find()
 })
 

@@ -50,14 +50,14 @@ router.get('/', async ({ response }) => {
 
 
 //占桌子(前端需要不断请求续占)
-router.post('/occupy', jwtGuard, async ({ response, request, state }) => {
-    const { sno } = await request.body().value
+router.post('/occupy/:id', jwtGuard, async ({ params, response, state }) => {
     try {
-        const table = await Table.findOne({ sno })
-        if (table?.occupiedBy) {
+        const table = await Table.findById(params.id)
+        if (table?.occupiedBy && table.occupiedBy != state.payload.user._id) {
             response.body = {
                 message: `${table.sno} 已有顾客了`
             }
+            response.status = Status.BadRequest
             return
         }
         table!.occupiedBy = state.payload.user._id
@@ -69,7 +69,7 @@ router.post('/occupy', jwtGuard, async ({ response, request, state }) => {
             console.log(`${table?.sno} 被解除`)
         }, 60_000))
         response.body = {
-            message: `${table?.sno} 使用成功`
+            message: `${table?.sno} 使用/续占成功`
         }
     } catch (e) {
         response.body = {
@@ -79,5 +79,20 @@ router.post('/occupy', jwtGuard, async ({ response, request, state }) => {
     }
 })
 
-router.post('leave', jwtGuard)
+router.post('/leave/:id', jwtGuard, async ({ params, state, response }) => {
+    const table = await Table.findById(params.id)
+    if (table?.occupiedBy != state.payload.user._id) //如果当前座位不是本用户的
+    {
+        response.body = {
+            message: "该座位不是你的"
+        }
+        response.status = Status.BadRequest
+        return
+    }
+    table!.occupiedBy = null
+    await table?.save()
+    response.body = {
+        message: "离开座位"
+    }
+})
 
