@@ -42,10 +42,10 @@ router.get('/', async ({ response }) => {
 //占桌子(前端需要不断请求续占)
 router.post('/occupy/:id', jwtGuard, async ({ params, response, state }) => {
     const table = await Table.findById(params.id)
-    if (table?.occupiedBy && table.occupiedBy != state.payload.user._id) {
+    if (table?.occupiedBy && table.occupiedBy != state.userId) {
         throw Error(`${table.sno} 已有顾客了`)
     }
-    table!.occupiedBy = state.payload.user._id
+    table!.occupiedBy = state.userId
     await table?.save()
     clearTimeout(tableTimers.get(table?.id)) // 续占，清除原来的计时器
     tableTimers.set(table?.id, setTimeout(async () => {
@@ -60,12 +60,12 @@ router.post('/occupy/:id', jwtGuard, async ({ params, response, state }) => {
 
 router.post('/leave/:id', jwtGuard, async ({ params, state, response }) => {
     const table = await Table.findById(params.id)
-    if (table?.occupiedBy != state.payload.user._id) //如果当前座位不是本用户的
+    if (table?.occupiedBy != state.userId) //如果当前座位不是本用户的
         throw Error("该座位不是你的")
     table!.occupiedBy = null
     await table?.save()
     response.body = {
-        message: state.payload.user._id + "离开座位"
+        message: state.userId + "离开座位"
     }
 })
 

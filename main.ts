@@ -14,8 +14,15 @@ console.log('%c Mongodb connected successfully !!', 'color: black; background-co
 
 await queue.init()
 
+
+// 定义服务器全局变量
+export interface State {
+    userId: string
+    userRole: string
+}
+
 // 服务器
-const app = new Application();
+const app = new Application<State>();
 // Logger
 app.use(async (ctx, next) => {
     await next();
@@ -35,10 +42,8 @@ app.use(async ({ response }, next) => {
     try {
         await next()
     } catch (e) {
-        response.body = {
-            message: e.message
-        }
-        response.status = Status.BadRequest
+        response.body = { message: e.message }
+        response.status = e.status || Status.BadRequest
     }
 })
 

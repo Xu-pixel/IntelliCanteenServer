@@ -7,7 +7,10 @@ const foodSchema = new Schema({
     },
     type: {
         type: String,
-        enum: ['pork', 'beef', 'mutton', 'aquatic', 'soy', 'vegetables', 'eggs', 'main']
+        enum: {
+            values: ['pork', 'beef', 'mutton', 'aquatic', 'soy', 'vegetables', 'eggs', 'main'],
+            message: "你这啥类型"
+        }
     },
     imgs: [String],
     comments: [{

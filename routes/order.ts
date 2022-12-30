@@ -14,12 +14,12 @@ router.get('/waiter', waiterGuard, async ({ response }) => {
 
 
 router.get('/customer', async ({ response, state }) => {
-    response.body = await Order.find({ customer: new mongoose.Types.ObjectId(state.payload.user._id) })
+    response.body = await Order.find({ customer: new mongoose.Types.ObjectId(state.userId) })
 })
 
 router.post('/', jwtGuard, async ({ request, response, state }) => {
     const order = await request.body().value
-    order.customer = state.payload.user._id
+    order.customer = state.userId
     const newOrder = await Order.create(order)
     queue.push(newOrder?.id)
     response.body = {
@@ -33,7 +33,7 @@ router.delete('/:id', async ({ request, response, state }) => {
     const order = await Order.findById(_id)
     if (order?.isFinished)
         throw Error("订单已经完成")
-    if (order?.customer != state.payload.user._id)
+    if (order?.customer != state.userId)
         throw Error("这不是你的订单")
     queue.deleteOrder(_id)//队列里的订单删除
     response.body = await Order.findByIdAndDelete({ _id }) //数据库里的订单删除

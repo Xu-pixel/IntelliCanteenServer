@@ -10,7 +10,7 @@ export default router
 
 router.use(jwtGuard, waiterGuard)
 router.get('/deal', async ({ response, state }) => {
-    const order = await waiters.get(state.payload.user._id)?.deal()
+    const order = await waiters.get(state.userId)?.deal()
     if (!order) {
         response.status = Status.NotFound
         return
@@ -21,7 +21,7 @@ router.get('/deal', async ({ response, state }) => {
 })
 
 router.get('/receive', ({ response, state }) => {
-    const waiter = waiters.get(state.payload.user._id)
+    const waiter = waiters.get(state.userId)
     waiter?.receive()
     if (waiter?.current) {
         response.body = {
@@ -36,7 +36,7 @@ router.get('/receive', ({ response, state }) => {
 })
 
 router.get('/rest', jwtGuard, waiterGuard, ({ response, state }) => {
-    const id = state.payload.user._id
+    const id = state.userId
     queue.push(waiters.get(id)!.current!)
     waiters.delete(id)
     response.body = {
@@ -46,7 +46,7 @@ router.get('/rest', jwtGuard, waiterGuard, ({ response, state }) => {
 
 
 router.get('/work', jwtGuard, waiterGuard, ({ response, state }) => {
-    const id = state.payload.user._id
+    const id = state.userId
     if (!waiters.get(id))
         waiters.set(id, new Waiter())
     response.body = {

@@ -25,7 +25,7 @@ router.post('/login', async ({ request, response }) => {
     const { name, passwd } = await request.body().value
     const user = await User.findOne({ name })
     if (user?.passwd === passwd) {
-        const jwt = await create({ alg: "HS512", typ: "JWT" }, { user }, key);
+        const jwt = await create({ alg: "HS512", typ: "JWT" }, { userId: user?.id, userRole: user?.role }, key);
         response.body = {
             message: "登录成功",
             jwt
