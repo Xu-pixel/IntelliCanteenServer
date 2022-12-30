@@ -1,4 +1,4 @@
-import { Application } from "https://deno.land/x/oak@v11.1.0/mod.ts";
+import { Application, Status } from "https://deno.land/x/oak@v11.1.0/mod.ts";
 import mongoose from 'npm:mongoose@^6.7'
 import "https://deno.land/std@0.168.0/dotenv/load.ts";
 import userRouter from './routes/user.ts'
@@ -30,6 +30,17 @@ app.use(async (ctx, next) => {
     const ms = Date.now() - start;
     ctx.response.headers.set("X-Response-Time", `${ms}ms`);
 });
+
+app.use(async ({ response }, next) => {
+    try {
+        await next()
+    } catch (e) {
+        response.body = {
+            message: e.message
+        }
+        response.status = Status.BadRequest
+    }
+})
 
 //路由注册
 app.use(userRouter.prefix('/user').routes())

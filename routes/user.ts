@@ -1,4 +1,4 @@
-import { Router, Status } from "https://deno.land/x/oak@v11.1.0/mod.ts";
+import { Router } from "https://deno.land/x/oak@v11.1.0/mod.ts";
 import User from '../models/user.ts'
 import { create } from "https://deno.land/x/djwt@v2.8/mod.ts";
 import { key } from '../utils/jwt.ts'
@@ -10,25 +10,15 @@ export default router
 
 router.post('/register', async ({ request, response }) => {
     const { name, passwd, role } = await request.body().value
-    if (await User.findOne({ name })) {
-        response.body = {
-            message: "用户名已被使用"
-        }
-        response.status = Status.BadRequest
-        return
-    }
-    try {
-        const newUser = new User({
-            name,
-            passwd,
-            role
-        })
-        console.log(newUser.toObject())
-        response.body = await newUser.save()
-    } catch (e) {
-        console.log(e)
-        response.status = Status.BadRequest
-    }
+    if (await User.findOne({ name }))
+        throw Error("用户名已被使用")
+    const newUser = new User({
+        name,
+        passwd,
+        role
+    })
+    console.log(newUser.toObject())
+    response.body = await newUser.save()
 })
 
 router.post('/login', async ({ request, response }) => {
@@ -42,10 +32,7 @@ router.post('/login', async ({ request, response }) => {
         }
     }
     else {
-        response.body = {
-            message: "密码错误"
-        }
-        response.status = Status.BadRequest
+        throw Error("密码错误")
     }
 })
 
