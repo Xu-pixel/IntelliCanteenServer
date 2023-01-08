@@ -33,3 +33,7 @@ router.put('/:id', jwtGuard, waiterGuard, async ({ request, response, params }) 
         food: newFood
     }
 })
+
+router.get('/:id', async ({ response, params }) => {
+    response.body = await Food.findById(params.id)
+})

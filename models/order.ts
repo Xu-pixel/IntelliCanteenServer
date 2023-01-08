@@ -16,7 +16,6 @@ const orderSchema = new Schema({
         default: Date.now,
         immutable: true,
     },
-    updatedAt: Date,
     table: {
         type: SchemaTypes.ObjectId,
         ref: 'Table',
@@ -27,7 +26,8 @@ const orderSchema = new Schema({
         default: 0
     },
     foods: [{
-        food: {
+        name: String,
+        id: {
             type: SchemaTypes.ObjectId,
             ref: 'Food',
             required: true,

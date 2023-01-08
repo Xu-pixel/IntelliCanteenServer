@@ -7,7 +7,7 @@ import tableRouter from './routes/table.ts'
 import waiterRouter from './routes/waiter.ts'
 import orderRouter from './routes/order.ts'
 import { queue } from "./utils/Queue.ts";
-
+import { CORS } from "https://deno.land/x/oak_cors@v0.1.1/mod.ts";
 //数据库连接
 await mongoose.connect(Deno.env.get('DATABASE_URI') || 'mongodb://localhost:27017')
 console.log('%c Mongodb connected successfully !!', 'color: black; background-color:green')
@@ -23,6 +23,7 @@ export interface State {
 
 // 服务器
 const app = new Application<State>();
+app.use(CORS())
 // Logger
 app.use(async (ctx, next) => {
     await next();

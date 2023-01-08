@@ -1,4 +1,4 @@
-import { model, Schema, SchemaTypes } from 'npm:mongoose@^6.7';
+import { model, Schema } from 'npm:mongoose@^6.7';
 
 const foodSchema = new Schema({
     name: {
@@ -12,20 +12,8 @@ const foodSchema = new Schema({
             message: "你这啥类型"
         }
     },
-    imgs: [String],
-    comments: [{
-        user: {
-            type: SchemaTypes.ObjectId,
-            ref: "User",
-            require: true
-        },
-        content: String,
-        likes: Number
-    }],
-    likes: {
-        type: Number,
-        default: 0
-    }
+    img: String,
+    price: Number
 })
 
 export default model('Food', foodSchema)

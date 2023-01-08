@@ -1,9 +1,9 @@
-import { Router } from "https://deno.land/x/oak@v11.1.0/mod.ts";
+import { Router, Status, Context } from "https://deno.land/x/oak@v11.1.0/mod.ts";
 import User from '../models/user.ts'
 import { create } from "https://deno.land/x/djwt@v2.8/mod.ts";
 import { key } from '../utils/jwt.ts'
 import { jwtGuard, waiterGuard } from "../utils/Guards.ts";
-
+import { State } from "../main.ts";
 const router = new Router()
 export default router
 
@@ -21,19 +21,25 @@ router.post('/register', async ({ request, response }) => {
     response.body = await newUser.save()
 })
 
-router.post('/login', async ({ request, response }) => {
+router.post('/login', async ({ request, response, throw: _throw }) => {
     const { name, passwd } = await request.body().value
     const user = await User.findOne({ name })
     if (user?.passwd === passwd) {
         const jwt = await create({ alg: "HS512", typ: "JWT" }, { userId: user?.id, userRole: user?.role }, key);
         response.body = {
             message: "登录成功",
+            user,
             jwt
         }
     }
     else {
-        throw Error("密码错误")
+        _throw(Status.Unauthorized, '密码错误')
     }
+})
+
+router.get('/info', jwtGuard, async ({ state, response }: Context<State>) => {
+    console.log(await User.findById(state.userId))
+    response.body = await User.findById(state.userId)
 })
 
 
