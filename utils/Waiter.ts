@@ -9,9 +9,10 @@ export default class Waiter {
         this._current = queue.pop()
     }
 
-    async deal() {
+    async deal(waiterId: string) {
         if (this._current) {
-            const order = await Order.findByIdAndUpdate(this._current, { isFinished: 1 })
+            const order = await Order.findByIdAndUpdate(this._current, { isFinished: 1, waiter: waiterId })
+            this._current = undefined
             return order
         }
     }

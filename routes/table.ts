@@ -54,7 +54,8 @@ router.post('/occupy/:id', jwtGuard, async ({ params, response, state }) => {
         console.log(`${table?.sno} 被解除`)
     }, 60_000))
     response.body = {
-        message: `${table?.sno} 使用/续占成功`
+        message: `${table?.sno} 使用/续占成功`,
+        sno: table?.sno
     }
 })
 

@@ -10,7 +10,7 @@ export default router
 
 router.use(jwtGuard, waiterGuard)
 router.get('/deal', async ({ response, state }) => {
-    const order = await waiters.get(state.userId)?.deal()
+    const order = await waiters.get(state.userId)?.deal(state.userId)
     if (!order) {
         response.status = Status.NotFound
         return
