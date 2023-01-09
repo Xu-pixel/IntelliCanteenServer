@@ -1,4 +1,4 @@
-import { model, Schema, SchemaTypes } from 'npm:mongoose@^6.7';
+import { model, Schema, SchemaTypes } from 'npm:mongoose@~6.7';
 
 const orderSchema = new Schema({
     customer: {

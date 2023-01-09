@@ -2,7 +2,7 @@ import { jwtGuard, waiterGuard } from "../utils/Guards.ts";
 import { Router } from "https://deno.land/x/oak@v11.1.0/mod.ts";
 import Order from '../models/order.ts'
 import { queue } from "../utils/Queue.ts";
-import mongoose from 'npm:mongoose@^6.7';
+import mongoose from 'npm:mongoose@~6.7';
 
 const router = new Router()
 export default router

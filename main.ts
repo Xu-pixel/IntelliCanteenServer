@@ -1,5 +1,5 @@
 import { Application, Status } from "https://deno.land/x/oak@v11.1.0/mod.ts";
-import mongoose from 'npm:mongoose@^6.7'
+import mongoose from 'npm:mongoose@~6.7'
 import "https://deno.land/std@0.168.0/dotenv/load.ts";
 import userRouter from './routes/user.ts'
 import foodRouter from './routes/food.ts'
